@@ -1,0 +1,48 @@
+rules_version = '2';
+
+// Security rules for Animation Evolution's community videos (Cloud Firestore).
+// Paste into Firebase console → Firestore Database → Rules, replacing
+// OWNER_EMAIL with the site owner's Google email, then Publish.
+//
+//   users/{uid}         a visitor's private profile (name, photo, saved videos)
+//   submissions/{uid}   one document per author: { items: { <id>: submission } }
+//                       — the author and the owner only
+//   published/{id}      approved videos — everyone reads, only the owner writes
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function isOwner() {
+      return signedIn()
+        && request.auth.token.email == 'OWNER_EMAIL'
+        && request.auth.token.email_verified == true;
+    }
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    match /users/{uid} {
+      allow read, write: if isSelf(uid);
+    }
+
+    match /submissions/{uid} {
+      allow read: if isSelf(uid) || isOwner();
+      allow delete: if isSelf(uid) || isOwner();
+      // Only an `items` map, at most 50 videos per author.
+      allow create, update: if (isSelf(uid) || isOwner())
+        && request.resource.data.keys().hasOnly(['items'])
+        && request.resource.data.items is map
+        && request.resource.data.items.size() <= 50;
+    }
+
+    match /published/{id} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

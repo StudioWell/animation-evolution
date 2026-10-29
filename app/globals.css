@@ -1,0 +1,1071 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Every colour in the UI comes from these variables, so a theme
+ * is just a different set of values. Components use the Tailwind utilities
+ * generated from @theme below (bg-surface, text-muted, border-line, …).
+ *
+ * Dark (default): roughly three quarters black (#0B0908 page), one quarter
+ * lighter warm browns for cards, bands and panels, warm white text and a
+ * caramel-brown accent. Primary actions use cream (#F3E8DA) on dark.
+ */
+
+:root,
+:root[data-theme="dark"] {
+  /* Black (most of the page), dark browns (cards, bands, panels) and warm white. */
+  --ae-bg: #0d0c0f;
+  --ae-bg-glow: transparent;
+  --ae-band: #131216;
+  --ae-surface: #1b1a1f;
+  --ae-surface-2: #232229;
+  --ae-surface-3: #2d2c34;
+  --ae-line: #28272c;
+  --ae-line-strong: #37363d;
+  --ae-fg: #ececee;
+  --ae-muted: #a9a8b0;
+  --ae-subtle: #7b7a82;
+  --ae-accent: #c6a37a;
+  --ae-accent-strong: #dcbe98;
+  --ae-accent-soft: rgb(198 163 122 / 0.14);
+  --ae-accent-ink: #17130e;
+  --ae-cream: #c6a37a;
+  --ae-cream-ink: #17130e;
+  --ae-danger: #eba592;
+  --ae-overlay: rgb(8 8 10 / 0.62);
+  --ae-thumb-bg: #232229;
+  --ae-shadow-card: 0 18px 40px -26px rgb(0 0 0 / 0.95);
+  --ae-shadow-panel: 0 28px 70px -24px rgb(0 0 0 / 0.95), 0 0 0 1px #37363d;
+}
+
+:root[data-theme="light"] {
+  --ae-band: #f4eee6;
+  --ae-cream: #2a1f17;
+  --ae-cream-ink: #fbf6ef;
+  --ae-bg: #fcfbf9;
+  --ae-bg-glow: rgb(140 106 70 / 0.07);
+  --ae-surface: #ffffff;
+  --ae-surface-2: #f3ece2;
+  --ae-surface-3: #e9dfd1;
+  --ae-line: rgb(48 36 24 / 0.11);
+  --ae-line-strong: rgb(48 36 24 / 0.2);
+  --ae-fg: #1f1b17;
+  --ae-muted: #5c544b;
+  --ae-subtle: #736b61;
+  --ae-accent: #8c6a46;
+  --ae-accent-strong: #6e5134;
+  --ae-accent-soft: rgb(140 106 70 / 0.12);
+  --ae-accent-ink: #ffffff;
+  --ae-danger: #a4432f;
+  --ae-overlay: rgb(31 27 23 / 0.38);
+  --ae-thumb-bg: #ebe3d8;
+  --ae-shadow-card: 0 18px 40px -24px rgb(60 40 20 / 0.4), 0 0 0 1px rgb(48 36 24 / 0.06);
+  --ae-shadow-panel: 0 24px 60px -24px rgb(60 40 20 / 0.35), 0 2px 6px rgb(60 40 20 / 0.06);
+  color-scheme: light;
+}
+
+:root[data-theme="dark-brown"] {
+  --ae-band: #241b16;
+  --ae-cream: #f3e9dc;
+  --ae-cream-ink: #22190f;
+  --ae-bg: #1e1612;
+  --ae-bg-glow: rgb(217 188 148 / 0.08);
+  --ae-surface: #261d18;
+  --ae-surface-2: #30251e;
+  --ae-surface-3: #3c2f26;
+  --ae-line: rgb(243 233 220 / 0.09);
+  --ae-line-strong: rgb(243 233 220 / 0.17);
+  --ae-fg: #f3e9dc;
+  --ae-muted: #c2b3a1;
+  --ae-subtle: #a19280;
+  --ae-accent: #d9bc94;
+  --ae-accent-strong: #ead3b2;
+  --ae-accent-soft: rgb(217 188 148 / 0.15);
+  --ae-accent-ink: #22190f;
+  --ae-danger: #eba592;
+  --ae-overlay: rgb(14 10 8 / 0.62);
+  --ae-thumb-bg: #17110e;
+  --ae-shadow-card: 0 18px 40px -22px rgb(0 0 0 / 0.8), 0 0 0 1px rgb(243 233 220 / 0.05);
+  --ae-shadow-panel: 0 1px 0 rgb(243 233 220 / 0.05) inset, 0 24px 60px -20px rgb(0 0 0 / 0.7);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--ae-bg);
+  --color-surface: var(--ae-surface);
+  --color-surface-2: var(--ae-surface-2);
+  --color-surface-3: var(--ae-surface-3);
+  --color-line: var(--ae-line);
+  --color-line-strong: var(--ae-line-strong);
+  --color-fg: var(--ae-fg);
+  --color-muted: var(--ae-muted);
+  --color-subtle: var(--ae-subtle);
+  --color-accent: var(--ae-accent);
+  --color-accent-strong: var(--ae-accent-strong);
+  --color-accent-soft: var(--ae-accent-soft);
+  --color-accent-ink: var(--ae-accent-ink);
+  --color-danger: var(--ae-danger);
+  --color-overlay: var(--ae-overlay);
+  --color-thumb: var(--ae-thumb-bg);
+  --color-band: var(--ae-band);
+  --color-cream: var(--ae-cream);
+  --color-cream-ink: var(--ae-cream-ink);
+
+  /* Latin: Archivo (width axis). Cyrillic: Golos Text. Japanese/Chinese: the system's CJK faces. */
+  --font-sans: var(--font-archivo, "Archivo"), var(--font-cyrillic, "Golos Text"), var(--font-cjk), ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --radius-card: 1.125rem;
+  --radius-thumb: 0.875rem;
+  --radius-control: 0.75rem;
+
+  --shadow-panel: var(--ae-shadow-panel);
+  --shadow-card: var(--ae-shadow-card);
+  --ease-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+:root {
+  --font-cjk: "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK JP", "Noto Sans JP",
+    "Noto Sans SC";
+}
+:root:lang(zh) {
+  --font-cjk: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", "Hiragino Sans GB", "Hiragino Sans";
+}
+
+@layer base {
+  html {
+    background: var(--ae-bg);
+    color: var(--ae-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--ae-bg);
+    transition:
+      background-color 0.4s ease,
+      color 0.4s ease;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--ae-accent-soft);
+    color: var(--ae-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ae-accent-strong);
+    outline-offset: 2px;
+  }
+
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  input[type="search"]::-webkit-search-cancel-button {
+    display: none;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--ae-surface-3) transparent;
+  }
+}
+
+/* CJK text: no negative tracking or synthetic width on headings. */
+:root:is(:lang(ja), :lang(zh)) :is(h1, h2, h3, .stretch-wide, .stretch-semi) {
+  letter-spacing: normal;
+  font-stretch: normal;
+}
+:root:is(:lang(ja), :lang(zh)) body {
+  line-height: 1.65;
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scroller-x {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .scroller-x::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stretch-wide {
+    font-stretch: 112%;
+  }
+  .stretch-semi {
+    font-stretch: 106%;
+  }
+}
+
+/* Video timestamps: one attribute on <html> hides every duration label at once. */
+:root[data-timestamps="off"] .ae-duration {
+  display: none !important;
+}
+
+/* ================= Components ================= */
+
+@layer components {
+  /* Buttons */
+  .ae-btn {
+    position: relative;
+    display: inline-flex;
+    height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    border-radius: 9999px;
+    padding-inline: 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition:
+      transform 0.35s var(--ease-spring),
+      background-color 0.25s ease,
+      border-color 0.25s ease,
+      color 0.25s ease,
+      box-shadow 0.35s var(--ease-soft),
+      filter 0.25s ease;
+  }
+  .ae-btn:active {
+    transform: scale(0.96);
+  }
+  .ae-btn:disabled {
+    opacity: 0.6;
+  }
+  .ae-btn-lg {
+    height: 3rem;
+    padding-inline: 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .ae-btn-primary {
+    background: var(--ae-cream);
+    color: var(--ae-cream-ink);
+    box-shadow: 0 10px 30px -16px rgb(0 0 0 / 0.8);
+  }
+  .ae-btn-primary:hover {
+    filter: brightness(1.07);
+  }
+  .ae-btn-ghost {
+    border: 1px solid var(--ae-line-strong);
+    color: var(--ae-fg);
+  }
+  .ae-btn-ghost:hover {
+    border-color: color-mix(in srgb, var(--ae-accent) 60%, transparent);
+    background: var(--ae-surface);
+    transform: translateY(-1px);
+  }
+  .ae-btn-quiet {
+    border: 1px solid var(--ae-line);
+    color: var(--ae-muted);
+  }
+  .ae-btn-quiet:hover {
+    color: var(--ae-fg);
+    border-color: var(--ae-line-strong);
+  }
+  .ae-btn-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 9999px;
+    border: 1px solid var(--ae-line);
+    padding: 0.375rem 0.875rem;
+    font-size: 0.875rem;
+    color: var(--ae-muted);
+    transition:
+      color 0.25s ease,
+      border-color 0.25s ease,
+      background-color 0.25s ease,
+      transform 0.35s var(--ease-spring);
+  }
+  .ae-btn-chip:hover {
+    color: var(--ae-fg);
+    border-color: color-mix(in srgb, var(--ae-accent) 50%, transparent);
+    background: var(--ae-accent-soft);
+  }
+  .ae-btn-chip:active {
+    transform: scale(0.95);
+  }
+
+  /* Chips and tags */
+  .ae-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border: 1px solid var(--ae-line);
+    padding: 0.25rem 0.75rem;
+    color: var(--ae-muted);
+    transition:
+      color 0.25s ease,
+      border-color 0.25s ease,
+      background-color 0.25s ease,
+      transform 0.35s var(--ease-spring);
+  }
+  .ae-chip:hover {
+    color: var(--ae-fg);
+    border-color: color-mix(in srgb, var(--ae-accent) 50%, transparent);
+    background: var(--ae-accent-soft);
+  }
+  .ae-chip:active {
+    transform: scale(0.95);
+  }
+  .ae-tag {
+    border-radius: 9999px;
+    border: 1px solid var(--ae-line);
+    padding: 0.125rem 0.5rem;
+    font-size: 12px;
+    color: var(--ae-subtle);
+    transition:
+      border-color 0.3s ease,
+      color 0.3s ease;
+  }
+  .group:hover .ae-tag {
+    border-color: var(--ae-line-strong);
+    color: var(--ae-muted);
+  }
+  .ae-tag-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 9999px;
+    background: var(--ae-surface-2);
+    padding: 0.25rem 0.75rem;
+    font-size: 13px;
+    color: var(--ae-muted);
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      transform 0.35s var(--ease-spring);
+  }
+  .ae-tag-link:hover {
+    background: var(--ae-accent-soft);
+    color: var(--ae-fg);
+  }
+
+  /* Links */
+  .ae-title-link {
+    background-image: linear-gradient(var(--ae-accent), var(--ae-accent));
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.45s var(--ease-out-expo);
+  }
+  .group:hover .ae-title-link,
+  .ae-title-link:focus-visible {
+    background-size: 100% 1px;
+  }
+  .ae-link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition:
+      background-size 0.4s var(--ease-out-expo),
+      color 0.25s ease;
+  }
+  .ae-link-underline:hover {
+    background-size: 100% 1px;
+  }
+
+  /* Cards: lift on hover */
+  .ae-lift {
+    transition:
+      transform 0.45s var(--ease-out-expo),
+      box-shadow 0.45s var(--ease-out-expo),
+      border-color 0.3s ease,
+      background-color 0.3s ease;
+  }
+  .ae-lift:hover {
+    transform: translateY(-2px);
+    border-color: var(--ae-line-strong);
+    background-color: var(--ae-surface-2);
+  }
+  /* Video and category cards: a quiet border/fill change and a 2px lift. */
+  .ae-card {
+    transition:
+      transform 0.4s var(--ease-out-expo),
+      border-color 0.25s ease,
+      background-color 0.25s ease,
+      box-shadow 0.4s var(--ease-out-expo);
+  }
+  .ae-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--ae-line-strong);
+    background-color: color-mix(in srgb, var(--ae-surface) 55%, var(--ae-surface-2));
+    box-shadow: var(--ae-shadow-card);
+  }
+  .ae-lift-thumb {
+    transition: filter 0.4s ease;
+  }
+  .group:hover .ae-lift-thumb {
+    filter: brightness(1.06);
+  }
+  /* Small labels on thumbnails: content type, duration. */
+  .ae-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border-radius: 9999px;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    background: rgb(10 10 12 / 0.74);
+    padding: 0.125rem 0.5rem;
+    font-size: 11.5px;
+    line-height: 1.35rem;
+    color: #f2f2f4;
+    backdrop-filter: blur(6px);
+    pointer-events: none;
+  }
+  .ae-icon-btn {
+    display: inline-grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border-radius: 9999px;
+    border: 1px solid var(--ae-line);
+    color: var(--ae-muted);
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+  .ae-icon-btn:hover,
+  .ae-icon-btn:focus-visible {
+    color: var(--ae-accent);
+    border-color: color-mix(in srgb, var(--ae-accent) 55%, transparent);
+    background: var(--ae-accent-soft);
+  }
+
+  /* Thumbnails */
+  .ae-thumb {
+    isolation: isolate;
+  }
+  .ae-placeholder {
+    background: var(--ae-surface-2);
+  }
+  .ae-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border-radius: 9999px;
+    border: 1px solid rgb(255 255 255 / 0.18);
+    background: rgb(12 10 8 / 0.55);
+    color: #fff;
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7);
+    transition:
+      opacity 0.3s ease,
+      transform 0.45s var(--ease-spring),
+      background-color 0.3s ease;
+  }
+  .group:hover .ae-play,
+  .group:focus-within .ae-play {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .ae-play-lg {
+    width: 4rem;
+    height: 4rem;
+    opacity: 0.92;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .group:hover .ae-play-lg {
+    background: var(--ae-accent);
+    color: var(--ae-accent-ink);
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  .ae-detail-media {
+    border-radius: var(--radius-thumb);
+    transition:
+      transform 0.5s var(--ease-out-expo),
+      box-shadow 0.5s var(--ease-out-expo);
+  }
+  .group:hover .ae-detail-media {
+    transform: translateY(-3px);
+    box-shadow: var(--ae-shadow-card);
+  }
+
+  /* Settings choice cards (theme, language) */
+  .ae-choice {
+    position: relative;
+    display: flex;
+    cursor: pointer;
+    flex-direction: column;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--ae-line);
+    background: var(--ae-surface);
+    padding: 1rem;
+    transition:
+      border-color 0.3s ease,
+      background-color 0.3s ease,
+      transform 0.4s var(--ease-spring),
+      box-shadow 0.4s var(--ease-out-expo);
+  }
+  .ae-choice:hover {
+    border-color: var(--ae-line-strong);
+    transform: translateY(-2px);
+  }
+  .ae-choice:active {
+    transform: scale(0.98);
+  }
+  .ae-choice.is-checked {
+    border-color: var(--ae-accent);
+    background: var(--ae-accent-soft);
+    box-shadow: 0 14px 34px -22px var(--ae-accent);
+  }
+  .ae-choice:has(:focus-visible) {
+    outline: 2px solid var(--ae-accent-strong);
+    outline-offset: 2px;
+  }
+
+  /* Menu items slide in one after another when the menu opens */
+  .ae-menu-item {
+    opacity: 0;
+    transform: translateX(14px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+  .ae-menu-item.is-open {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.4s ease calc(var(--i, 0) * 40ms + 60ms),
+      transform 0.55s var(--ease-out-expo) calc(var(--i, 0) * 40ms + 60ms);
+  }
+
+  /* Brand mark: frames slide toward the key pose on hover */
+  .ae-brandmark rect {
+    transition: transform 0.5s var(--ease-spring);
+  }
+  .group:hover .ae-brandmark rect {
+    transform: translateX(var(--d, 0px));
+  }
+
+  /* Header gains depth once the page scrolls (scroll-driven where supported) */
+  .ae-header {
+    transition:
+      background-color 0.4s ease,
+      box-shadow 0.4s ease;
+  }
+
+  /* Search input soft glow while focused */
+  .ae-search-input::placeholder {
+    transition: opacity 0.3s ease;
+  }
+  .ae-search-input:focus::placeholder {
+    opacity: 0.55;
+  }
+
+  .ae-spinner {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 9999px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    animation: ae-spin 0.7s linear infinite;
+  }
+
+  .ae-toast {
+    animation: ae-toast-in 0.55s var(--ease-spring) both;
+  }
+}
+
+/* ================= Motion ================= */
+
+@keyframes ae-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ae-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ae-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ae-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ae-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ae-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ae-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ae-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+@keyframes ae-drift {
+  from {
+    transform: translate3d(-4%, -2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(4%, 3%, 0) scale(1.08);
+  }
+}
+
+@keyframes ae-reveal {
+  from {
+    opacity: 0.25;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ae-header-depth {
+  to {
+    box-shadow: 0 12px 30px -18px rgb(0 0 0 / 0.6);
+  }
+}
+
+.ae-skeleton {
+  background: linear-gradient(90deg, var(--ae-surface-2) 30%, var(--ae-surface-3) 50%, var(--ae-surface-2) 70%) 0 0 / 200%
+    100%;
+  animation: ae-shimmer 1.4s linear infinite;
+}
+
+.ae-fade-in {
+  animation: ae-fade-in 0.35s var(--ease-soft) both;
+}
+
+.ae-rise {
+  animation: ae-rise 0.45s var(--ease-out-expo) both;
+}
+
+.ae-page {
+  animation: ae-page-in 0.55s var(--ease-out-expo) both;
+}
+
+.ae-hero-line {
+  animation: ae-rise 0.7s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 90ms + 120ms);
+}
+
+.ae-stagger {
+  animation: ae-rise 0.6s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 80ms);
+}
+
+.ae-card-in {
+  animation: ae-card-in 0.65s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 55ms + 60ms);
+}
+
+.ae-dropdown {
+  transform-origin: top center;
+  animation: ae-dropdown-in 0.35s var(--ease-out-expo) both;
+}
+@keyframes ae-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+}
+
+.ae-pop-in {
+  animation: ae-pop 0.45s var(--ease-spring) both;
+  animation-delay: calc(var(--i, 0) * 30ms);
+}
+
+.ae-hero {
+  isolation: isolate;
+}
+
+/* Sections rise into place as they scroll into view (browsers with scroll-driven animations). */
+@supports (animation-timeline: view()) {
+  .ae-reveal {
+    animation: ae-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 55%;
+  }
+  .ae-header {
+    animation: ae-header-depth linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 120px;
+  }
+}
+
+/* Theme and language changes cross-fade (View Transitions API). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: var(--ease-soft);
+}
+
+/*
+ * Onion-skin title: ghost frames trail the wordmark with easing-in spacing
+ * (wide gaps first, tight gaps last), the way an animator reads spacing.
+ * On load the ghosts glide into their resting offsets once.
+ */
+.onion {
+  position: relative;
+  isolation: isolate;
+}
+.onion__ghost {
+  position: absolute;
+  inset: 0;
+  color: var(--ae-accent);
+  pointer-events: none;
+  user-select: none;
+  transform-origin: left center;
+  z-index: -1;
+}
+.onion__ghost[data-frame="1"] {
+  opacity: 0.07;
+  transform: translateX(calc(var(--onion-step) * -3.4));
+}
+.onion__ghost[data-frame="2"] {
+  opacity: 0.12;
+  transform: translateX(calc(var(--onion-step) * -1.6));
+}
+.onion__ghost[data-frame="3"] {
+  opacity: 0.2;
+  transform: translateX(calc(var(--onion-step) * -0.55));
+}
+
+@keyframes onion-settle-1 {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--onion-step) * -9)) scaleX(1.06);
+  }
+}
+@keyframes onion-settle-2 {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--onion-step) * -5)) scaleX(1.04);
+  }
+}
+@keyframes onion-settle-3 {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--onion-step) * -2)) scaleX(1.02);
+  }
+}
+@keyframes onion-key {
+  from {
+    opacity: 0;
+    transform: translateX(-0.12em);
+  }
+}
+
+.onion__key {
+  animation: onion-key 0.8s var(--ease-out-expo) both;
+}
+.onion__ghost[data-frame="1"] {
+  animation: onion-settle-1 1.3s var(--ease-out-expo) 0.05s both;
+}
+.onion__ghost[data-frame="2"] {
+  animation: onion-settle-2 1.2s var(--ease-out-expo) 0.1s both;
+}
+.onion__ghost[data-frame="3"] {
+  animation: onion-settle-3 1.1s var(--ease-out-expo) 0.15s both;
+}
+/* Hovering the title replays the frames easing in. */
+.onion:hover .onion__ghost[data-frame="1"] {
+  transform: translateX(calc(var(--onion-step) * -5));
+  transition: transform 0.9s var(--ease-out-expo);
+}
+.onion:hover .onion__ghost[data-frame="2"] {
+  transform: translateX(calc(var(--onion-step) * -2.4));
+  transition: transform 0.8s var(--ease-out-expo);
+}
+.onion:hover .onion__ghost[data-frame="3"] {
+  transform: translateX(calc(var(--onion-step) * -0.9));
+  transition: transform 0.7s var(--ease-out-expo);
+}
+
+/* Reduce Animations setting + OS preference: no animation, near-instant transitions. */
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  animation-delay: 0ms !important;
+  transition-duration: 0.001ms !important;
+  transition-delay: 0ms !important;
+  scroll-behavior: auto !important;
+}
+:root[data-motion="reduced"] :is(.ae-skeleton, .ae-reveal, .ae-header, .ae-hero)::before,
+:root[data-motion="reduced"] :is(.ae-skeleton, .ae-reveal, .ae-header) {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  :is(.ae-skeleton, .ae-reveal, .ae-header) {
+    animation: none !important;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
+/* Lighter warm band used for alternating home sections and the footer (the "25%"). */
+.ae-band {
+  background: var(--ae-band);
+  border: 1px solid var(--ae-line);
+  border-radius: 1.5rem;
+}
+
+/* ================= Welcome screen ================= */
+/* Hidden without JavaScript (its buttons need it) and once closed this session. */
+html:not([data-js]) .ae-welcome,
+html[data-welcome="seen"] .ae-welcome {
+  display: none !important;
+}
+.ae-welcome {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--ae-bg);
+  animation: ae-fade-in 0.5s var(--ease-soft) both;
+  transition:
+    opacity 0.42s var(--ease-soft),
+    transform 0.42s var(--ease-out-expo),
+    filter 0.42s var(--ease-soft);
+}
+.ae-welcome.is-leaving {
+  opacity: 0;
+  transform: scale(1.015);
+  filter: blur(6px);
+  pointer-events: none;
+}
+/* A slow, barely-there shimmer of warm light: amber, terracotta, rose-brown, cream. */
+.ae-welcome__glow {
+  position: absolute;
+  inset: -15%;
+  pointer-events: none;
+  filter: blur(70px) saturate(1.05);
+  opacity: 0.75;
+  animation: ae-welcome-hue 24s ease-in-out infinite alternate;
+}
+.ae-welcome__blob {
+  position: absolute;
+  width: 58vmax;
+  height: 58vmax;
+  border-radius: 50%;
+  animation: ae-welcome-float 30s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.ae-welcome__blob--1 {
+  top: -18%;
+  left: -12%;
+  background: radial-gradient(circle at center, rgb(196 128 66 / 0.55), transparent 62%);
+}
+.ae-welcome__blob--2 {
+  right: -16%;
+  bottom: -24%;
+  background: radial-gradient(circle at center, rgb(150 72 46 / 0.5), transparent 62%);
+  animation-duration: 36s;
+  animation-delay: -9s;
+}
+.ae-welcome__blob--3 {
+  top: 26%;
+  left: 30%;
+  width: 46vmax;
+  height: 46vmax;
+  background: radial-gradient(circle at center, rgb(232 196 150 / 0.28), transparent 60%);
+  animation-duration: 42s;
+  animation-delay: -17s;
+}
+.ae-welcome__blob--4 {
+  top: -8%;
+  right: 4%;
+  width: 40vmax;
+  height: 40vmax;
+  background: radial-gradient(circle at center, rgb(168 96 84 / 0.36), transparent 62%);
+  animation-duration: 33s;
+  animation-delay: -4s;
+}
+.ae-welcome__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 85% 75% at 50% 40%, transparent 0%, color-mix(in srgb, var(--ae-bg) 35%, transparent) 72%, color-mix(in srgb, var(--ae-bg) 70%, transparent) 100%);
+}
+.ae-welcome__rise {
+  animation: ae-rise 0.8s var(--ease-out-expo) both;
+  animation-delay: calc(var(--d, 0ms) + 120ms);
+}
+.ae-welcome__btn {
+  box-shadow: 0 18px 40px -24px rgb(0 0 0 / 0.9);
+}
+.ae-welcome .ae-btn-ghost {
+  background: color-mix(in srgb, var(--ae-surface) 60%, transparent);
+}
+.ae-welcome .ae-btn-ghost:hover {
+  background: color-mix(in srgb, var(--ae-surface-2) 85%, transparent);
+}
+@keyframes ae-welcome-float {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(7vmax, 5vmax, 0) scale(1.12);
+  }
+  100% {
+    transform: translate3d(-5vmax, 9vmax, 0) scale(0.94);
+  }
+}
+@keyframes ae-welcome-hue {
+  from {
+    filter: blur(70px) saturate(1.05) hue-rotate(-8deg);
+    opacity: 0.62;
+  }
+  to {
+    filter: blur(70px) saturate(1.15) hue-rotate(10deg);
+    opacity: 0.85;
+  }
+}
+:root[data-motion="reduced"] :is(.ae-welcome__glow, .ae-welcome__blob) {
+  animation: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.ae-welcome__glow, .ae-welcome__blob) {
+    animation: none !important;
+  }
+}
+
+/* ================= Dialogs ================= */
+.ae-modal__backdrop {
+  animation: ae-fade-in 0.25s var(--ease-soft) both;
+}
+.ae-modal__panel {
+  animation: ae-modal-in 0.45s var(--ease-out-expo) both;
+}
+.ae-modal.is-closing .ae-modal__backdrop {
+  animation: ae-fade-out 0.22s var(--ease-soft) both;
+}
+.ae-modal.is-closing .ae-modal__panel {
+  animation: ae-modal-out 0.22s var(--ease-soft) both;
+}
+@keyframes ae-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ae-modal-out {
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+@keyframes ae-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Saved (bookmark) toggle */
+.ae-save[aria-pressed="true"] {
+  color: var(--ae-accent-ink);
+  background: var(--ae-accent);
+  border-color: var(--ae-accent);
+}
+.ae-save[aria-pressed="true"] svg {
+  fill: currentColor;
+}
+.ae-save.is-bumped svg {
+  animation: ae-pop 0.45s var(--ease-spring) both;
+}
