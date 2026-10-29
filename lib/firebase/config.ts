@@ -18,7 +18,14 @@ export interface FirebaseWebConfig {
   appId: string;
 }
 
-export const FIREBASE_CONFIG: FirebaseWebConfig | null = null;
+export const FIREBASE_CONFIG: FirebaseWebConfig | null = {
+  apiKey: "AIzaSyAfKYyvAUeP2QQDy9PQitR8pWDIl-06J7c",
+  authDomain: "animation-evolution.firebaseapp.com",
+  projectId: "animation-evolution",
+  storageBucket: "animation-evolution.firebasestorage.app",
+  messagingSenderId: "397113057108",
+  appId: "1:397113057108:web:43f61b8d1950b68ea532c1",
+};
 
 /**
  * Video file uploads use Cloud Storage for Firebase, which needs the project
