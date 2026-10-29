@@ -136,12 +136,12 @@ export interface Resource {
   blurb?: BlurbKind;
 }
 
-export type BlurbKind = "sakuga" | "genga" | "reel" | "student-reel" | "studio-reel" | "rig-reel";
+export type BlurbKind = "sakuga" | "genga" | "reel" | "student-reel" | "studio-reel" | "rig-reel" | "move-ref" | "anime-clip" | "fight-anim";
 
 /** relevance · added (newest additions to this library) · newest (publish date) · popular (views). */
 export type SortOrder = "relevance" | "added" | "newest" | "popular";
 
-export type DurationBucket = "any" | "short" | "medium" | "long";
+export type DurationBucket = "any" | "short" | "normal" | "long" | "verylong";
 
 /**
  * A library search. Values inside one filter combine with OR; different filters

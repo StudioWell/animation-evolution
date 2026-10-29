@@ -148,3 +148,5 @@ export const ADDED_2 = "2026-10-28";
 export const ADDED_3 = "2026-10-28T16:00:00Z";
 /** Fourth pass: FPS, weapons and platform tutorials. */
 export const ADDED_4 = "2026-10-29T12:00:00Z";
+/** Fifth pass: fight animation and short practice clips. */
+export const ADDED_5 = "2026-10-29T16:00:00Z";

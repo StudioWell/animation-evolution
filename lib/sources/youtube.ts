@@ -1,5 +1,7 @@
 import "server-only";
 
+import { stripDurationTags } from "@/lib/search/duration-tags";
+import { durationBucketMatches } from "@/lib/search/engine";
 import { parseIsoDuration } from "@/lib/format";
 import { InFlight, TtlCache } from "@/lib/security/cache";
 import { OverloadedError, upstreamPool } from "@/lib/security/concurrency";
@@ -230,15 +232,24 @@ function errorKind(error: unknown): LiveSearchPage["error"] {
   return "upstream";
 }
 
+/** YouTube's search only knows <4, 4–20 and >20 minutes; ask for the widest fit and filter exactly afterwards. */
+const YOUTUBE_DURATION: Record<LiveSearchInput["duration"], "any" | "short" | "medium" | "long"> = {
+  any: "any",
+  short: "short",
+  normal: "any",
+  long: "any",
+  verylong: "long",
+};
+
 async function searchUncached(input: LiveSearchInput): Promise<LiveSearchPage> {
   const params: Record<string, string> = {
     part: "snippet",
     type: "video",
     maxResults: "12",
     safeSearch: "strict",
-    q: focusQuery(input.kind, input.q),
+    q: focusQuery(input.kind, stripDurationTags(input.q)),
     order: input.sort === "popular" ? "viewCount" : input.sort === "newest" ? "date" : "relevance",
-    videoDuration: input.duration,
+    videoDuration: YOUTUBE_DURATION[input.duration],
   };
   const lang = process.env.YOUTUBE_RELEVANCE_LANGUAGE?.trim();
   if (lang && /^[a-z]{2}$/.test(lang)) params.relevanceLanguage = lang;
@@ -253,7 +264,7 @@ async function searchUncached(input: LiveSearchInput): Promise<LiveSearchPage> {
     if (!video || video === "missing") continue;
     const mapped = mapVideo(video, input.kind);
     // Never present unavailable or age-restricted videos as normal results.
-    if (mapped && mapped.availability === "available") items.push(mapped);
+    if (mapped && mapped.availability === "available" && durationBucketMatches(mapped.durationSeconds, input.duration)) items.push(mapped);
   }
   const next = search.nextPageToken;
   return { enabled: true, items, nextPageToken: next && PAGE_TOKEN.test(next) ? next : null, error: null };

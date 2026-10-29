@@ -16,9 +16,10 @@ export const SORT_OPTIONS: { value: SortOrder; label: string; hint?: string }[] 
 
 export const DURATION_OPTIONS: { value: DurationBucket; label: string; hint?: string }[] = [
   { value: "any", label: "Any length" },
-  { value: "short", label: "Under 4 minutes" },
-  { value: "medium", label: "4 to 20 minutes" },
-  { value: "long", label: "Over 20 minutes" },
+  { value: "short", label: "Short: up to 3 minutes" },
+  { value: "normal", label: "Normal: 3 to 10 minutes" },
+  { value: "long", label: "Long: 10 to 30 minutes" },
+  { value: "verylong", label: "Very long: 45 minutes or more" },
 ];
 
 export const CONTENT_TYPE_OPTIONS: { value: ContentType; label: string }[] = [

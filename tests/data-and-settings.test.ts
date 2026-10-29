@@ -10,12 +10,13 @@ import { DEFAULT_SETTINGS, parseSettings } from "@/lib/settings/schema";
 import { DESCRIPTIONS_I18N } from "@/lib/data/descriptions-i18n";
 import { THIRD_SAKUGA, THIRD_YOUTUBE } from "@/lib/data/collection-3";
 import { FOURTH_PASS } from "@/lib/data/collection-4";
+import { FIFTH_SAKUGA, FIFTH_YOUTUBE } from "@/lib/data/collection-5";
 import { describe as describeIn } from "@/lib/i18n";
 import { categoryName, detectLocale, groupName, plural, tagName, translate } from "@/lib/i18n";
 
 test("every curated record passes validation and none were dropped", () => {
   for (const r of CURATED_LIBRARY) assert.deepEqual(validateRecord(r), [], r.id);
-  assert.equal(CURATED_LIBRARY.length, REFERENCES.length + TUTORIALS.length + THIRD_YOUTUBE.length + THIRD_SAKUGA.length + FOURTH_PASS.length);
+  assert.equal(CURATED_LIBRARY.length, REFERENCES.length + TUTORIALS.length + THIRD_YOUTUBE.length + THIRD_SAKUGA.length + FOURTH_PASS.length + FIFTH_YOUTUBE.length + FIFTH_SAKUGA.length);
   assert.equal(new Set(CURATED_LIBRARY.map((r) => r.id)).size, CURATED_LIBRARY.length);
 });
 
@@ -144,4 +145,24 @@ test("platforms: every platform page has a real set of tutorials, from beginner 
   }
   const fps = CURATED_LIBRARY.filter((r) => r.categories.some((c) => c.startsWith("fps-")));
   assert.ok(fps.length >= 50, `FPS section: ${fps.length} videos`);
+});
+
+test("first visits are in English and old saved settings start again in English", async () => {
+  const { firstVisitSettings, loadSettings } = await import("@/lib/settings/storage");
+  assert.equal(firstVisitSettings().language, "en");
+  const store = new Map<string, string>([["ae-settings-v2", JSON.stringify({ theme: "light", language: "ru", showTimestamps: false, reduceMotion: true })]]);
+  const g = globalThis as Record<string, unknown>;
+  const prevWindow = g.window;
+  const prevDocument = g.document;
+  g.window = { localStorage: { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => store.set(k, v), removeItem: (k: string) => store.delete(k) } };
+  g.document = { cookie: "" };
+  try {
+    const s = loadSettings("local");
+    assert.deepEqual(s, { theme: "light", language: "en", showTimestamps: false, reduceMotion: true });
+    store.set("ae-settings-v3", JSON.stringify({ ...s, language: "ja" }));
+    assert.equal(loadSettings("local").language, "ja");
+  } finally {
+    g.window = prevWindow;
+    g.document = prevDocument;
+  }
 });

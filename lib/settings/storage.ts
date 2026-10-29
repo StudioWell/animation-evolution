@@ -1,9 +1,8 @@
-import { detectLocale, LOCALE_INFO, type Locale } from "@/lib/i18n/locales";
+import { LOCALE_INFO } from "@/lib/i18n/locales";
 import {
   COOKIE_NAME,
   DEFAULT_SETTINGS,
-  LEGACY_COOKIE_NAME,
-  LEGACY_STORAGE_KEY,
+  LEGACY_KEYS,
   STORAGE_KEY,
   parseSettings,
   type Settings,
@@ -18,15 +17,6 @@ import {
  */
 
 export type StorageMode = "local" | "cookie" | "memory";
-
-/** The visitor's preferred supported language, from the browser. */
-export function browserLocale(): Locale {
-  try {
-    return detectLocale(typeof navigator !== "undefined" ? navigator.languages ?? [navigator.language] : []);
-  } catch {
-    return "en";
-  }
-}
 
 let memory: Settings | null = null;
 
@@ -74,25 +64,30 @@ function writeCookie(value: string) {
   }
 }
 
-/** Defaults for a first visit: dark theme and the browser's language. */
+/** Defaults for a first visit: dark theme, English. Visitors pick another language in Settings. */
 export function firstVisitSettings(): Settings {
-  return { ...DEFAULT_SETTINGS, language: browserLocale() };
+  return { ...DEFAULT_SETTINGS };
 }
 
 export function loadSettings(mode: StorageMode = detectStorageMode()): Settings {
-  const fallback = browserLocale();
   try {
     if (mode === "local") {
       const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) return parseSettings(JSON.parse(raw), fallback);
-      const legacy = window.localStorage.getItem(LEGACY_STORAGE_KEY) ?? readCookie(LEGACY_COOKIE_NAME);
-      return legacy ? fromLegacy(legacy, fallback) : firstVisitSettings();
+      if (raw) return parseSettings(JSON.parse(raw));
+      for (const legacy of LEGACY_KEYS) {
+        const old = window.localStorage.getItem(legacy.storage) ?? readCookie(legacy.cookie);
+        if (old) return fromLegacy(old, legacy.resetTheme);
+      }
+      return firstVisitSettings();
     }
     if (mode === "cookie") {
       const raw = readCookie();
-      if (raw) return parseSettings(JSON.parse(raw), fallback);
-      const legacy = readCookie(LEGACY_COOKIE_NAME);
-      return legacy ? fromLegacy(legacy, fallback) : firstVisitSettings();
+      if (raw) return parseSettings(JSON.parse(raw));
+      for (const legacy of LEGACY_KEYS) {
+        const old = readCookie(legacy.cookie);
+        if (old) return fromLegacy(old, legacy.resetTheme);
+      }
+      return firstVisitSettings();
     }
   } catch {
     // Corrupt value: fall through to defaults.
@@ -100,9 +95,10 @@ export function loadSettings(mode: StorageMode = detectStorageMode()): Settings 
   return memory ? { ...memory } : firstVisitSettings();
 }
 
-/** Settings saved before the dark theme became the default: keep everything but the theme. */
-function fromLegacy(raw: string, fallback: Settings["language"]): Settings {
-  return { ...parseSettings(JSON.parse(raw), fallback), theme: DEFAULT_SETTINGS.theme };
+/** Settings saved before English became the default: keep the preferences, start again in English (and on the dark theme for v1). */
+function fromLegacy(raw: string, resetTheme: boolean): Settings {
+  const old = parseSettings(JSON.parse(raw));
+  return { ...old, language: DEFAULT_SETTINGS.language, theme: resetTheme ? DEFAULT_SETTINGS.theme : old.theme };
 }
 
 export function saveSettings(settings: Settings, mode: StorageMode = detectStorageMode()): StorageMode {

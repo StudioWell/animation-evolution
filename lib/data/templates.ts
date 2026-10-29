@@ -90,6 +90,106 @@ const FOCUS: Record<string, Record<Locale, string>> = {
     zh: "转身动作，以及转动时如何保持体积",
   },
 };
+/** Live-action move reference, keyed by the move (tags[0]): what it is, and what to study in it. */
+const MOVES: Record<string, { what: Record<Locale, string>; focus: Record<Locale, string> }> = {
+  punch: {
+    what: { en: "punch", ru: "удара рукой", ja: "パンチ", zh: "出拳" },
+    focus: {
+      en: "how the rotation travels from the hips to the shoulder, the snap of the arm and the recoil",
+      ru: "как вращение идёт от бёдер к плечу, хлёст руки и возврат",
+      ja: "腰から肩へ伝わる回転、腕のスナップ、引き戻し",
+      zh: "旋转如何从髋部传到肩膀、手臂的爆发和收回",
+    },
+  },
+  uppercut: {
+    what: { en: "uppercut", ru: "апперкота", ja: "アッパーカット", zh: "上勾拳" },
+    focus: {
+      en: "the dip before the strike, the drive up from the legs and the follow-through",
+      ru: "присед перед ударом, толчок ногами вверх и доводку",
+      ja: "打つ前の沈み込み、脚からの突き上げ、フォロースルー",
+      zh: "出拳前的下沉、从腿部向上的发力和跟随动作",
+    },
+  },
+  kick: {
+    what: { en: "kick", ru: "удара ногой", ja: "キック", zh: "踢腿" },
+    focus: {
+      en: "the chamber, balance over the standing leg and the recovery",
+      ru: "подготовку ноги, баланс на опорной ноге и возврат в стойку",
+      ja: "膝の引き付け、軸足でのバランス、戻り",
+      zh: "提膝蓄力、支撑腿上的平衡和收势",
+    },
+  },
+  "knee strike": {
+    what: { en: "knee strike", ru: "удара коленом", ja: "膝蹴り", zh: "膝击" },
+    focus: {
+      en: "how the hips drive the knee forward and how balance is kept on one leg",
+      ru: "как бёдра посылают колено вперёд и как держится баланс на одной ноге",
+      ja: "腰が膝を前へ押し出す動きと、片足でのバランスの保ち方",
+      zh: "髋部如何把膝盖向前送出，以及单腿如何保持平衡",
+    },
+  },
+  "strike combo": {
+    what: { en: "strike combination", ru: "серии ударов", ja: "連続打撃", zh: "组合打击" },
+    focus: {
+      en: "the weight shifts between strikes and how each move flows into the next",
+      ru: "перенос веса между ударами и то, как одно движение перетекает в другое",
+      ja: "打撃の間の重心移動と、技から技へのつながり",
+      zh: "每次出击之间的重心转移，以及动作如何衔接",
+    },
+  },
+  sweep: {
+    what: { en: "leg sweep", ru: "подсечки", ja: "足払い", zh: "扫腿" },
+    focus: {
+      en: "the low base, the rotation and how the performer rises out of it",
+      ru: "низкую стойку, вращение и выход из него",
+      ja: "低い構え、回転、そこからの立ち上がり",
+      zh: "低重心、旋转以及如何从中起身",
+    },
+  },
+  falls: {
+    what: { en: "fall", ru: "падений", ja: "倒れ方", zh: "倒地" },
+    focus: {
+      en: "how the body breaks a fall and where the weight lands",
+      ru: "как тело гасит падение и куда приходится вес",
+      ja: "受け身の取り方と、体重がどこに乗るか",
+      zh: "身体如何缓冲倒地，以及重量落在哪里",
+    },
+  },
+  choreography: {
+    what: { en: "fight choreography", ru: "боевой хореографии", ja: "殺陣", zh: "打斗编排" },
+    focus: {
+      en: "the timing between attacker and defender, the distance and how each hit is sold",
+      ru: "тайминг между атакующим и защищающимся, дистанцию и то, как «продаётся» каждый удар",
+      ja: "攻め手と受け手のタイミング、間合い、やられの見せ方",
+      zh: "进攻方与防守方之间的节奏、距离，以及如何把每一击演得有说服力",
+    },
+  },
+  previs: {
+    what: { en: "stunt previs", ru: "трюкового превиза", ja: "スタントのプリビズ", zh: "特技预演" },
+    focus: {
+      en: "how a stunt team plans a fight for camera — beats, angles and reactions — before the shoot",
+      ru: "как трюковая команда заранее выстраивает бой под камеру: ритм, ракурсы и реакции",
+      ja: "撮影前にスタントチームがカメラ向けに殺陣を組み立てる方法 — 段取り、アングル、リアクション",
+      zh: "特技团队如何在开拍前为镜头设计打斗——节拍、机位和反应",
+    },
+  },
+};
+
+/** How a fight animation was made, from its tags. */
+function animStyle(locale: Locale, tags: readonly string[]): string {
+  const key = ["stick figure", "2d", "roblox", "blender", "maya", "cinema 4d"].find((t) => tags.includes(t)) ?? "3d";
+  const names: Record<string, Record<Locale, string>> = {
+    "stick figure": { en: "Stick-figure", ru: "Стикмен-", ja: "棒人間の", zh: "火柴人" },
+    "2d": { en: "2D", ru: "2D-", ja: "2Dの", zh: "二维" },
+    roblox: { en: "Roblox", ru: "Roblox-", ja: "Robloxの", zh: "Roblox " },
+    blender: { en: "Blender", ru: "Blender-", ja: "Blenderの", zh: "Blender " },
+    maya: { en: "Maya", ru: "Maya-", ja: "Mayaの", zh: "Maya " },
+    "cinema 4d": { en: "Cinema 4D", ru: "Cinema 4D-", ja: "Cinema 4Dの", zh: "Cinema 4D " },
+    "3d": { en: "3D", ru: "3D-", ja: "3Dの", zh: "三维" },
+  };
+  return names[key]![locale];
+}
+
 const DEFAULT_FOCUS: Record<Locale, string> = {
   en: "timing, spacing and drawing choices",
   ru: "тайминг, интервалы и решения в рисунке",
@@ -129,6 +229,33 @@ export function blurbText(locale: Locale, r: Fields): string {
         zh: `《${work}》中由 ${who} 绘制的片段，收录于 Sakugabooru。逐帧观看，研究${focus}。`,
       }[locale];
     }
+    case "move-ref": {
+      const move = MOVES[r.tags[0] ?? ""] ?? MOVES["strike combo"]!;
+      return {
+        en: `Live-action ${move.what.en} reference from ${who}. Step through it frame by frame to study ${move.focus.en}.`,
+        ru: `Живой референс ${move.what.ru} от ${who}. Смотрите покадрово, чтобы изучить${move.focus.ru.startsWith("как ") ? "," : ""} ${move.focus.ru}.`,
+        ja: `${who}による実写の${move.what.ja}リファレンス。コマ送りで${move.focus.ja}を研究できます。`,
+        zh: `${who} 提供的真人${move.what.zh}参考。逐帧观看，研究${move.focus.zh}。`,
+      }[locale];
+    }
+    case "anime-clip": {
+      const work = works[0] ?? "";
+      return {
+        en: `Official ${work} clip from ${who}. A complete fight beat at broadcast quality — study the choreography, impact frames, smears and camera work.`,
+        ru: `Официальный фрагмент «${work}» с канала ${who}. Законченный эпизод боя в эфирном качестве — изучайте хореографию, импакт-кадры, смазы и работу камеры.`,
+        ja: `${who}公式の『${work}』クリップ。放送品質のひとまとまりの戦闘シーン — 殺陣、インパクトフレーム、スミア、カメラワークを研究できます。`,
+        zh: `${who} 官方发布的《${work}》片段。完整的一段播出级打斗——研究动作编排、冲击帧、拖影和镜头运用。`,
+      }[locale];
+    }
+    case "fight-anim": {
+      const style = animStyle(locale, r.tags);
+      return {
+        en: `${style} fight animation by ${who}. Short and self-contained — step through it to study the choreography, the timing of each hit and reaction, and how the poses read.`,
+        ru: `${style}анимация боя от ${who}. Короткая и законченная — смотрите покадрово, изучая хореографию, тайминг каждого удара и реакции, читаемость поз.`,
+        ja: `${who}による${style}格闘アニメーション。短く完結した作品 — コマ送りで殺陣、打撃とやられのタイミング、ポーズの読みやすさを研究できます。`,
+        zh: `${who} 的${style}打斗动画。短小而完整——逐帧观看，研究动作编排、每一击与受击反应的节奏，以及姿势的可读性。`,
+      }[locale];
+    }
     case "student-reel":
       return {
         en: `An entry-level ${game ? "game animation" : "animation"} portfolio posted by ${who}. A useful benchmark for what a junior reel contains — compare its range, polish and sense of weight with your own work.`,
@@ -154,7 +281,7 @@ export function blurbText(locale: Locale, r: Fields): string {
     default:
       return {
         en: `${game ? "Game animation" : "3D animation"} reel by ${who}${has ? `, with work from ${list("en", works)}` : ""}. Finished, production-quality motion — scrub through it to study posing, timing and how each action reads.`,
-        ru: `Шоурил ${game ? "игровой" : "3D-"}анимации от ${who}${has ? ` (проекты: ${list("ru", works)})` : ""}. Готовая анимация продакшен-уровня — смотрите покадрово, изучая позы, тайминг и читаемость каждого действия.`,
+        ru: `Шоурил ${game ? "игровой " : "3D-"}анимации от ${who}${has ? ` (проекты: ${list("ru", works)})` : ""}. Готовая анимация продакшен-уровня — смотрите покадрово, изучая позы, тайминг и читаемость каждого действия.`,
         ja: `${who}による${game ? "ゲーム" : "3D"}アニメーションのリール${has ? `（${list("ja", works)}の仕事を含む）` : ""}。製品レベルの完成モーション — コマ送りでポーズ、タイミング、動きの読みやすさを研究できます。`,
         zh: `${who} 的${game ? "游戏" : "三维"}动画作品集${has ? `，包含${list("zh", works)}中的工作` : ""}。成品级的动作——逐帧拖动，研究姿势、节奏和每个动作的可读性。`,
       }[locale];

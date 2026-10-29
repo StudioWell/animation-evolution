@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { isKnownCategory, isKnownGroup } from "@/lib/config/categories";
 import { SOURCE_IDS } from "@/lib/config/sources";
+import { durationTag } from "@/lib/search/duration-tags";
 import { MAX_PAGE, MAX_QUERY_LENGTH, PAGE_SIZE } from "@/lib/search/query-string";
 import type {
   ContentType,
@@ -24,7 +25,7 @@ import type {
  */
 
 const SORTS = ["relevance", "added", "newest", "popular"] as const satisfies readonly SortOrder[];
-const DURATIONS = ["any", "short", "medium", "long"] as const satisfies readonly DurationBucket[];
+const DURATIONS = ["any", "short", "normal", "long", "verylong"] as const satisfies readonly DurationBucket[];
 const DIFFICULTIES = ["beginner", "intermediate", "advanced"] as const satisfies readonly Difficulty[];
 const CONTENT_TYPES = ["reference", "tutorial", "breakdown", "mocap"] as const satisfies readonly ContentType[];
 const MEDIA = ["game", "anime", "film", "animation", "live-action"] as const satisfies readonly Medium[];
@@ -56,7 +57,8 @@ const schema = z.object({
   cat: csv.optional(),
   group: slug.optional(),
   sort: z.enum(SORTS).optional(),
-  dur: z.enum(DURATIONS).optional(),
+  // "medium" was the old name for the 3–10 minute bucket; keep old links working.
+  dur: z.preprocess((v) => (v === "medium" ? "normal" : v), z.enum(DURATIONS)).optional(),
   type: csv.optional(),
   media: csv.optional(),
   tech: csv.optional(),
@@ -148,7 +150,8 @@ export function parseSearchQuery(
       categories: [...new Set(categories)],
       group,
       sort: data.sort ?? "relevance",
-      duration: data.dur ?? "any",
+      // A length tag typed in the search box (#short, #normal, #long, #verylong) wins over the Length filter.
+      duration: durationTag(data.q ?? "") ?? data.dur ?? "any",
       types,
       media,
       techniques,

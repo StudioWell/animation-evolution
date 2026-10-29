@@ -23,6 +23,7 @@ import { ResultsGrid, SkeletonGrid } from "@/components/library/ResultsGrid";
 import { Dropdown, type DropdownOption } from "@/components/ui/Dropdown";
 import { Icon } from "@/components/ui/Icon";
 import { SearchField } from "@/components/ui/SearchField";
+import { durationTag, stripDurationTags } from "@/lib/search/duration-tags";
 import { useI18n } from "@/components/settings/useI18n";
 
 type Status = "ready" | "loading" | "loading-more" | "error";
@@ -154,7 +155,11 @@ export function LibraryExplorer({
    */
   const applyQuery = useCallback(
     (next: SearchQuery) => {
-      const query1 = { ...next, page: 1 };
+      // "#short" & co. in the text set the Length filter; deleting the tag clears it again.
+      const tag = durationTag(next.q);
+      const prevTag = durationTag(queryRef.current.q);
+      const duration = tag ?? (prevTag && next.duration === prevTag && next.q !== queryRef.current.q ? "any" : next.duration);
+      const query1 = { ...next, duration, page: 1 };
       queryRef.current = query1;
       setQuery(query1);
       const key = toSearchParams(query1).toString();
@@ -178,7 +183,15 @@ export function LibraryExplorer({
 
   useEffect(() => () => controller.current?.abort(), []);
 
-  const update = (patch: Partial<SearchQuery>) => applyQuery({ ...query, ...patch });
+  const update = (patch: Partial<SearchQuery>) => {
+    // Picking a length in the menu replaces a #short/#long… tag typed in the search box.
+    if (patch.duration !== undefined && durationTag(query.q)) {
+      const q = stripDurationTags(query.q);
+      setText(q);
+      return applyQuery({ ...query, ...patch, q });
+    }
+    applyQuery({ ...query, ...patch });
+  };
 
   const loadMore = () => {
     const next = { ...query, page: query.page + 1 };
@@ -249,7 +262,7 @@ export function LibraryExplorer({
     multi("software", softwareLabel);
     multi("levels", (v) => t(`level.${v}`));
     multi("creators", (v) => counts.creators[v]?.name ?? v);
-    if (query.duration !== "any") out.push({ key: "dur", label: t(`dur.${query.duration}`), remove: () => ({ ...query, duration: "any" }) });
+    if (query.duration !== "any") out.push({ key: "dur", label: t(`dur.${query.duration}`), remove: () => ({ ...query, q: stripDurationTags(query.q), duration: "any" }) });
     return out;
   }, [query, t, cat, groupName, softwareLabel, counts.creators]);
 
@@ -283,6 +296,7 @@ export function LibraryExplorer({
             }
           }}
         />
+        <p className="mt-2 pl-1 text-[12.5px] text-subtle">{t("search.tagsHint")}</p>
       </form>
 
       <div className="mt-6">
@@ -348,7 +362,11 @@ export function LibraryExplorer({
               <button
                 key={chip.key}
                 type="button"
-                onClick={() => applyQuery(chip.remove())}
+                onClick={() => {
+                  const next = chip.remove();
+                  if (next.q !== query.q) setText(next.q);
+                  applyQuery(next);
+                }}
                 aria-label={t("filter.removeOne", { label: chip.label })}
                 className="ae-pop-in inline-flex h-7 items-center gap-1.5 rounded-full bg-surface-2 py-0 pr-2 pl-3 text-[12.5px] text-fg ring-1 ring-line transition-colors duration-150 hover:ring-line-strong"
               >

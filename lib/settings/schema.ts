@@ -21,13 +21,16 @@ export const DEFAULT_SETTINGS: Settings = Object.freeze({
 });
 
 /**
- * v2: the dark theme became the site-wide default, so settings saved under v1
- * keep their language and preferences but start again on the dark theme.
+ * v3: English became the site-wide default language (visitors switch in
+ * Settings). Settings saved under v2 keep their theme and preferences but start
+ * again in English; v1 settings also start again on the dark theme (v2's change).
  */
-export const STORAGE_KEY = "ae-settings-v2";
-export const COOKIE_NAME = "ae_settings2";
-export const LEGACY_STORAGE_KEY = "ae-settings-v1";
-export const LEGACY_COOKIE_NAME = "ae_settings";
+export const STORAGE_KEY = "ae-settings-v3";
+export const COOKIE_NAME = "ae_settings3";
+export const LEGACY_KEYS = [
+  { storage: "ae-settings-v2", cookie: "ae_settings2", resetTheme: false },
+  { storage: "ae-settings-v1", cookie: "ae_settings", resetTheme: true },
+] as const;
 
 /** Swatches for the theme picker: background, surface, text, accent. Labels come from translations. */
 export const THEME_OPTIONS: { id: ThemeId; swatches: string[] }[] = [
@@ -48,7 +51,7 @@ export function parseSettings(input: unknown, fallbackLanguage: Locale = DEFAULT
 }
 
 /** Read the settings cookie on the server (Next.js layout) so the first render matches the visitor. */
-export function parseSettingsCookie(raw: string | undefined | null, fallbackLanguage: Locale): Settings | null {
+export function parseSettingsCookie(raw: string | undefined | null, fallbackLanguage: Locale = DEFAULT_SETTINGS.language): Settings | null {
   if (!raw) return null;
   try {
     return parseSettings(JSON.parse(decodeURIComponent(raw)), fallbackLanguage);

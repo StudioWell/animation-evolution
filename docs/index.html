@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-VB95X8vhX6O5bcot40lD67DXYyvx7G6K0ZKWOUh4lOo=' https://accounts.google.com/gsi/client https://www.gstatic.com/firebasejs/ https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; frame-src https://accounts.google.com/gsi/ https://*.firebaseapp.com https://*.web.app; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com; media-src 'self' blob: https://firebasestorage.googleapis.com; connect-src 'self' https://accounts.google.com/gsi/ https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://www.gstatic.com/firebasejs/; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-+8i68/47QZoXT5lMr0juKlE54mHlUDYhQ7m8wbRlzbE=' https://accounts.google.com/gsi/client https://www.gstatic.com/firebasejs/ https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; frame-src https://accounts.google.com/gsi/ https://*.firebaseapp.com https://*.web.app; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com; media-src 'self' blob: https://firebasestorage.googleapis.com; connect-src 'self' https://accounts.google.com/gsi/ https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://www.gstatic.com/firebasejs/; object-src 'none'; base-uri 'self'; form-action 'self'">
 
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Animation Evolution</title>
@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Golos+Text:wght@400..900&display=swap">
-<script>(function(){try{var d=document.documentElement,s=null;d.setAttribute("data-js","");try{if(sessionStorage.getItem("ae:welcome")==="seen")d.setAttribute("data-welcome","seen")}catch(e){}try{s=localStorage.getItem("ae-settings-v2")}catch(e){}if(!s){var m=document.cookie.match(/(?:^|; )ae_settings2=([^;]*)/);if(m)s=decodeURIComponent(m[1])}if(!s)return;var v=JSON.parse(s)||{};var t=v.theme;if(t==="dark"||t==="light"||t==="dark-brown"){d.setAttribute("data-theme",t);d.style.colorScheme=t==="light"?"light":"dark"}var l={en:"en",ru:"ru",ja:"ja",zh:"zh-CN"}[v.language];if(l)d.lang=l;if(v.showTimestamps===false)d.setAttribute("data-timestamps","off");if(v.reduceMotion===true)d.setAttribute("data-motion","reduced")}catch(e){}})();</script>
+<script>(function(){try{var d=document.documentElement,s=null;d.setAttribute("data-js","");try{if(sessionStorage.getItem("ae:welcome")==="seen")d.setAttribute("data-welcome","seen")}catch(e){}try{s=localStorage.getItem("ae-settings-v3")}catch(e){}if(!s){var m=document.cookie.match(/(?:^|; )ae_settings3=([^;]*)/);if(m)s=decodeURIComponent(m[1])}if(!s)return;var v=JSON.parse(s)||{};var t=v.theme;if(t==="dark"||t==="light"||t==="dark-brown"){d.setAttribute("data-theme",t);d.style.colorScheme=t==="light"?"light":"dark"}var l={en:"en",ru:"ru",ja:"ja",zh:"zh-CN"}[v.language];if(l)d.lang=l;if(v.showTimestamps===false)d.setAttribute("data-timestamps","off");if(v.reduceMotion===true)d.setAttribute("data-motion","reduced")}catch(e){}})();</script>
 <style>:root{--font-archivo:"Archivo";--font-cyrillic:"Golos Text"}
 /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @layer properties;
@@ -1385,6 +1385,9 @@
   }
   .pb-16 {
     padding-bottom: calc(var(--spacing) * 16);
+  }
+  .pl-1 {
+    padding-left: var(--spacing);
   }
   .pl-3 {
     padding-left: calc(var(--spacing) * 3);

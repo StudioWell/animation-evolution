@@ -89,17 +89,18 @@ test("sorting: newest additions come first", () => {
   const r = searchResources(CURATED_LIBRARY, q("all", { sort: "added", pageSize: 50 }));
   const added = r.items.map((i) => i.addedAt);
   assert.deepEqual(added, [...added].sort().reverse());
-  assert.equal(added[0], "2026-10-29T12:00:00Z", "the fourth pass is the newest");
+  assert.equal(added[0], "2026-10-29T16:00:00Z", "the fifth pass is the newest");
 });
 
 test("duration filters only use real duration data", () => {
   assert.equal(durationBucketMatches(null, "short"), false);
   assert.equal(durationBucketMatches(null, "any"), true);
-  assert.equal(durationBucketMatches(200, "short"), true);
-  assert.equal(durationBucketMatches(600, "medium"), true);
-  assert.equal(durationBucketMatches(3600, "long"), true);
+  assert.equal(durationBucketMatches(170, "short"), true);
+  assert.equal(durationBucketMatches(600, "normal"), true);
+  assert.equal(durationBucketMatches(1800, "long"), true);
+  assert.equal(durationBucketMatches(3600, "verylong"), true);
   const long = searchResources(CURATED_LIBRARY, q("tutorial", { duration: "long" }));
-  assert.ok(long.items.every((i) => (i.durationSeconds ?? 0) > 1200));
+  assert.ok(long.items.every((i) => (i.durationSeconds ?? 0) > 600 && (i.durationSeconds ?? 0) <= 1800));
 });
 
 test("sorting: newest puts dated items first in descending order", () => {
@@ -196,4 +197,35 @@ test("search works in Russian, Japanese and Chinese", () => {
   assert.ok(ja.total > 0, "ja: パンチ");
   const zh = searchResources(CURATED_LIBRARY, q("reference", { q: "布娃娃" }));
   assert.ok(zh.items.some((i) => i.categories.includes("ragdoll")), "zh: 布娃娃 → ragdoll");
+});
+
+test("length tags in the search text: #short, #normal, #long, #verylong", async () => {
+  const { durationTag, stripDurationTags } = await import("@/lib/search/duration-tags");
+  const { parseSearchQuery } = await import("@/lib/search/params");
+  assert.equal(durationTag("punch combo #short"), "short");
+  assert.equal(durationTag("#VeryLong sword"), "verylong");
+  assert.equal(durationTag("#shorts"), null);
+  assert.equal(stripDurationTags("punch #short combo"), "punch combo");
+  // Exact bounds from the spec: short ≤ 3 min, normal ≤ 10, long ≤ 30, very long ≥ 45.
+  assert.equal(durationBucketMatches(180, "short"), true);
+  assert.equal(durationBucketMatches(181, "short"), false);
+  assert.equal(durationBucketMatches(181, "normal"), true);
+  assert.equal(durationBucketMatches(601, "long"), true);
+  assert.equal(durationBucketMatches(2000, "long"), false);
+  assert.equal(durationBucketMatches(2000, "verylong"), false);
+  assert.equal(durationBucketMatches(2700, "verylong"), true);
+  const parsed = parseSearchQuery("reference", { q: "punch #short" });
+  assert.ok(parsed.ok);
+  if (!parsed.ok) return;
+  assert.equal(parsed.query.duration, "short");
+  const page = searchResources(CURATED_LIBRARY, { ...parsed.query, pageSize: 200 });
+  assert.ok(page.total > 0);
+  assert.ok(page.items.every((i) => (i.durationSeconds ?? 0) <= 180));
+  // The tag itself is not searched as a word.
+  const plain = searchResources(CURATED_LIBRARY, { ...parsed.query, duration: "any", pageSize: 200 });
+  const words = searchResources(CURATED_LIBRARY, { ...parsed.query, q: "punch", duration: "any", pageSize: 200 });
+  assert.equal(plain.total, words.total);
+  // Old links with dur=medium still work.
+  const old = parseSearchQuery("reference", { dur: "medium" });
+  assert.ok(old.ok && old.query.duration === "normal");
 });

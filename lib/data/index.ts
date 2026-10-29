@@ -3,6 +3,7 @@ import { OPTIONS } from "@/lib/search/params";
 import { REFERENCES } from "@/lib/data/references";
 import { TUTORIALS } from "@/lib/data/tutorials";
 import { THIRD_SAKUGA, THIRD_YOUTUBE } from "@/lib/data/collection-3";
+import { FIFTH_SAKUGA, FIFTH_YOUTUBE } from "@/lib/data/collection-5";
 import { FOURTH_PASS } from "@/lib/data/collection-4";
 import { isAllowedSourceUrl, isAllowedThumbnailUrl } from "@/lib/security/url";
 import type { Resource } from "@/lib/types";
@@ -58,4 +59,4 @@ function buildLibrary(records: Resource[]): Resource[] {
   return valid;
 }
 
-export const CURATED_LIBRARY: Resource[] = buildLibrary([...REFERENCES, ...TUTORIALS, ...THIRD_YOUTUBE, ...THIRD_SAKUGA, ...FOURTH_PASS]);
+export const CURATED_LIBRARY: Resource[] = buildLibrary([...REFERENCES, ...TUTORIALS, ...THIRD_YOUTUBE, ...THIRD_SAKUGA, ...FOURTH_PASS, ...FIFTH_YOUTUBE, ...FIFTH_SAKUGA]);

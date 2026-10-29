@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, Golos_Text } from "next/font/google";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -10,7 +10,7 @@ import { DecisionToast } from "@/components/community/DecisionToast";
 import { ProfileProvider } from "@/components/profile/ProfileProvider";
 import { SettingsProvider } from "@/components/settings/SettingsProvider";
 import { WelcomeGate } from "@/components/welcome/WelcomeGate";
-import { detectLocale, LOCALE_INFO, parseAcceptLanguage } from "@/lib/i18n/locales";
+import { LOCALE_INFO } from "@/lib/i18n/locales";
 import { SETTINGS_INIT_SCRIPT } from "@/lib/settings/init-script";
 import { COOKIE_NAME, DEFAULT_SETTINGS, parseSettingsCookie } from "@/lib/settings/schema";
 import "./globals.css";
@@ -40,12 +40,9 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   // Render the visitor's saved language and theme on the first response (no flash, correct <html lang>).
-  const [cookieStore, headerList] = await Promise.all([cookies(), headers()]);
-  const browserLanguage = detectLocale(parseAcceptLanguage(headerList.get("accept-language")));
-  const initial = parseSettingsCookie(cookieStore.get(COOKIE_NAME)?.value, browserLanguage) ?? {
-    ...DEFAULT_SETTINGS,
-    language: browserLanguage,
-  };
+  // First visits are in English; visitors choose another language in Settings.
+  const cookieStore = await cookies();
+  const initial = parseSettingsCookie(cookieStore.get(COOKIE_NAME)?.value) ?? { ...DEFAULT_SETTINGS };
 
   return (
     <html

@@ -4,6 +4,7 @@ import { sourceLabel } from "@/lib/config/sources";
 import { allCategoryNames, allDescriptions, allFacetNames, allTagNames } from "@/lib/i18n";
 import { creatorKey } from "@/lib/format";
 import type { DurationBucket, Resource, SearchQuery, SearchResultPage } from "@/lib/types";
+import { DURATION_RANGES, stripDurationTags } from "@/lib/search/duration-tags";
 import { expandSynonyms, normalize, tokenize } from "@/lib/search/text";
 
 /**
@@ -112,9 +113,8 @@ export function scoreEntry(entry: IndexedResource, queryTokens: string[], queryN
 export function durationBucketMatches(seconds: number | null, bucket: DurationBucket): boolean {
   if (bucket === "any") return true;
   if (seconds == null) return false; // only filter on real duration data
-  if (bucket === "short") return seconds < 4 * 60;
-  if (bucket === "medium") return seconds >= 4 * 60 && seconds <= 20 * 60;
-  return seconds > 20 * 60;
+  const range = DURATION_RANGES[bucket];
+  return seconds >= range.min && seconds <= range.max;
 }
 
 const some = <T,>(selected: readonly T[], values: readonly T[]) => selected.length === 0 || values.some((v) => selected.includes(v));
@@ -158,8 +158,9 @@ export function editorialCompare(a: Resource, b: Resource): number {
 
 export function searchResources(resources: readonly Resource[], query: SearchQuery): SearchResultPage {
   const index = buildIndex(resources);
-  const queryTokens = [...new Set(tokenize(query.q))];
-  const queryNormalized = normalize(query.q);
+  const text = stripDurationTags(query.q);
+  const queryTokens = [...new Set(tokenize(text))];
+  const queryNormalized = normalize(text);
   const hasText = queryTokens.length > 0;
 
   const scored: { resource: Resource; score: number }[] = [];
